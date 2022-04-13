@@ -4,7 +4,7 @@ SRC = main.c mem.c
 
 SRCS_DIR = ./srcs/
 
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = #-Wall -Werror -Wextra
 
 SRCS = $(addprefix $(SRCS_DIR), $(SRC))
 

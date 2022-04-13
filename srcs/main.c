@@ -65,15 +65,18 @@ void    print_bits(unsigned char octet)
 
 void	loop(uint8_t *hash_str, int total_bloc)
 {
-	uint8_t		bloc[64];
+	//uint8_t		bloc[64];
+	//(void
 	uint32_t	a;
 	uint32_t	b;
 	uint32_t	c;
 	uint32_t	d;
+	uint32_t	*word_bloc;
 
-	for (int b = 0; b < total_bloc; b++)
+	for (int x = 0; x < total_bloc; x++)
 	{
-		ft_memcpy(bloc, &hash_str[b * BLOC_SIZE], BLOC_SIZE);
+		word_bloc = (uint32_t *)&hash_str[x * BLOC_SIZE];
+		//ft_memcpy(bloc, &hash_str[b * BLOC_SIZE], BLOC_SIZE);
 		a = h0;
 		b = h1;
 		c = h2;
@@ -81,13 +84,30 @@ void	loop(uint8_t *hash_str, int total_bloc)
 		for (int i = 0; i < 64; i++)
 		{
 			if (i < 16)
-				;
+			{
+				f = F(b, c, d);
+				g = i;
+			}
 			else if (i >= 16 && i < 32)
-				;
+			{
+				f = G(b, c, d);
+				g = (x * i + 1) % 16;
+			}
 			else if (i >= 32 && i < 48)
-				;
+			{
+				f = H(b, c, d);
+				g = (3 * i + 5) % 16;
+			}
 			else if (i >= 48 && i < 64)
-				;
+			{
+				f = I(b, c, d);
+				g = (7 * i) % 16;
+			}
+			uint32_t	temp = d;
+			d = c;
+			c = b;
+			b = 
+			a = temp;
 		}
 	}
 }
