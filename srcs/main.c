@@ -24,9 +24,20 @@ uint32_t	r[] = { 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
 uint32_t	k[64];
 
 uint32_t	h0 = 0x67452301;
-uint32_t	h1 = 0xEFCDAB89;
-uint32_t	h2 = 0x98BADCFE;
+uint32_t	h1 = 0xefcdab89;
+uint32_t	h2 = 0x98badcfe;
 uint32_t	h3 = 0x10325476;
+
+int		md5_reverse(int i)
+{
+	int result;
+
+	result = (i << 24 & 0xff000000) +
+		(i << 8 & 0xff0000) +
+		(i >> 8 & 0xff00) +
+		(i >> 24 & 0xff);
+	return (result);
+}
 
 int		get_bytes_blocs(int size)
 {
@@ -106,10 +117,16 @@ void	loop(uint8_t *hash_str, int total_bloc)
 			uint32_t	temp = d;
 			d = c;
 			c = b;
-			b = 
+			b = LEFT_ROTATE((a + f + k[i] + word_bloc[g]), r[i]) + b;
 			a = temp;
 		}
+		h0 = h0 + a;
+		h1 = h1 + b;
+		h2 = h2 + c;
+		h3 = h3 + d;
 	}
+	printf("\nTEST : %.8x / %.8x / %.8x / %.8x\n", md5_reverse(h0), md5_reverse(h1), md5_reverse(h2), md5_reverse(h3));
+	printf("\nTEST : %u / %u / %u / %u\n", h0, h1, h2, h3);
 }
 
 int		main(int ac, char **av)
