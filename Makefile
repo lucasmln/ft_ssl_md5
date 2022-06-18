@@ -1,6 +1,6 @@
 NAME = ft_ssl
 
-SRC = main.c mem.c
+SRC = main.c mem.c ft_strdup.c
 
 SRCS_DIR = ./srcs/
 
@@ -13,7 +13,7 @@ OBJ = $(SRCS:.c=.o)
 all : $(NAME)
 
 $(NAME) : $(OBJ)
-		gcc $(CFLAGS) $(OBJ) -o $(NAME)
+		clang $(CFLAGS) $(OBJ) -o $(NAME)
 
 clean:
 	rm -rf $(OBJ)
