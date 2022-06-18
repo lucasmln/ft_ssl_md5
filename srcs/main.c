@@ -1,27 +1,5 @@
 #include "../inc/ft_ssl.h"
-
-uint32_t	k[] = { 0xd76aa478,0xe8c7b756,0x242070db,0xc1bdceee,
-				0xf57c0faf,0x4787c62a,0xa8304613,0xfd469501,
-				0x698098d8,0x8b44f7af,0xffff5bb1,0x895cd7be,
-				0x6b901122,0xfd987193,0xa679438e,0x49b40821,
-				0xf61e2562,0xc040b340,0x265e5a51,0xe9b6c7aa,
-				0xd62f105d,0x2441453,0xd8a1e681,0xe7d3fbc8,
-				0x21e1cde6,0xc33707d6,0xf4d50d87,0x455a14ed,
-				0xa9e3e905,0xfcefa3f8,0x676f02d9,0x8d2a4c8a,
-				0xfffa3942,0x8771f681,0x6d9d6122,0xfde5380c,
-				0xa4beea44,0x4bdecfa9,0xf6bb4b60,0xbebfbc70,
-				0x289b7ec6,0xeaa127fa,0xd4ef3085,0x4881d05,
-				0xd9d4d039,0xe6db99e5,0x1fa27cf8,0xc4ac5665,
-				0xf4292244,0x432aff97,0xab9423a7,0xfc93a039,
-				0x655b59c3,0x8f0ccc92,0xffeff47d,0x85845dd1,
-				0x6fa87e4f,0xfe2ce6e0,0xa3014314,0x4e0811a1,
-				0xf7537e82,0xbd3af235,0x2ad7d2bb,0xeb86d391};
-
-uint32_t	r[] = { 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
-					5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
-					4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
-					6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21 };
-uint32_t	k[64];
+#include "../inc/md5.h"
 
 uint32_t	h0 = 0x67452301;
 uint32_t	h1 = 0xefcdab89;
@@ -41,7 +19,7 @@ int		md5_reverse(int i)
 
 int		get_bytes_blocs(int size)
 {
-	return ((size / BLOC_SIZE) + 1 + (size % BLOC_SIZE > 56 ? 1 : 0));
+	return ((size / BLOC_SIZE) + 1 + (size % BLOC_SIZE >= 56 ? 1 : 0));
 }
 
 void	fatal()
@@ -60,6 +38,21 @@ int		ft_strlen(char *str)
 	return (i);
 }
 
+void	print_bloc_bits(uint8_t *str)
+{
+	write(1, "BLOC BITS : ", ft_strlen("BLOC BITS : "));
+	for (int i = 0; i < BLOC_SIZE; i++)
+	{
+		char c = (i % 26) + 'A';
+		write(1, "BLOC BITS : ", ft_strlen("BLOC BITS : "));
+		write(1, &c, 1);
+		write(1, " ", 1);
+		print_bits(str[i]);
+		write(1, "\n", 1);
+	}
+	write(1, "\n", 1);
+}
+
 void    print_bits(unsigned char octet)
 {
 	int z = 128, oct = octet;
@@ -74,95 +67,104 @@ void    print_bits(unsigned char octet)
 	}
 }
 
-void	loop(uint8_t *hash_str, int total_bloc)
+void	loop(t_md5 *md5, uint32_t *hash_str)
 {
-	//uint8_t		bloc[64];
-	//(void
-	uint32_t	a;
-	uint32_t	b;
-	uint32_t	c;
-	uint32_t	d;
 	uint32_t	*word_bloc;
+	uint32_t	abcd[4];
 
-	for (int x = 0; x < total_bloc; x++)
+	for (int x = 0; x < md5->nb_blocs; x++)
 	{
-		word_bloc = (uint32_t *)&hash_str[x * BLOC_SIZE];
-		//ft_memcpy(bloc, &hash_str[b * BLOC_SIZE], BLOC_SIZE);
-		a = h0;
-		b = h1;
-		c = h2;
-		d = h3;
+		word_bloc = (uint32_t *)(hash_str + x * BLOC_SIZE / 4);
+		abcd[A] = h0;
+		abcd[B] = h1;
+		abcd[C] = h2;
+		abcd[D] = h3;
 		for (int i = 0; i < 64; i++)
-		{
-			if (i < 16)
-			{
-				f = F(b, c, d);
-				g = i;
-			}
-			else if (i >= 16 && i < 32)
-			{
-				f = G(b, c, d);
-				g = (x * i + 1) % 16;
-			}
-			else if (i >= 32 && i < 48)
-			{
-				f = H(b, c, d);
-				g = (3 * i + 5) % 16;
-			}
-			else if (i >= 48 && i < 64)
-			{
-				f = I(b, c, d);
-				g = (7 * i) % 16;
-			}
-			uint32_t	temp = d;
-			d = c;
-			c = b;
-			b = LEFT_ROTATE((a + f + k[i] + word_bloc[g]), r[i]) + b;
-			a = temp;
-		}
-		h0 = h0 + a;
-		h1 = h1 + b;
-		h2 = h2 + c;
-		h3 = h3 + d;
+			digest_bloc(abcd, i, word_bloc);
+		h0 += abcd[A];
+		h1 += abcd[B];
+		h2 += abcd[C];
+		h3 += abcd[D];
 	}
-	printf("\nTEST : %.8x / %.8x / %.8x / %.8x\n", md5_reverse(h0), md5_reverse(h1), md5_reverse(h2), md5_reverse(h3));
-	printf("\nTEST : %u / %u / %u / %u\n", h0, h1, h2, h3);
+	printf("\n%.8x%.8x%.8x%.8x\n", md5_reverse(h0), md5_reverse(h1), md5_reverse(h2), md5_reverse(h3));
+}
+
+void	switch_abcd(uint32_t *abcd, uint32_t f, int i)
+{
+	uint32_t	temp;
+
+	temp = abcd[D];
+	abcd[D] = abcd[C];
+	abcd[C] = abcd[B];
+	abcd[B] += LEFT_ROTATE(f, r[i]);
+	abcd[A] = temp;
+}
+
+void	digest_bloc(uint32_t *abcd, int i, uint32_t *bloc)
+{
+	uint32_t	g;
+	uint32_t	f;
+
+	if (i < 16)
+	{
+		f = F(abcd[B], abcd[C], abcd[D]);
+		g = i;
+	}
+	else if (i >= 16 && i < 32)
+	{
+		f = G(abcd[B], abcd[C], abcd[D]);
+		g = (5 * i + 1) % 16;
+	}
+	else if (i >= 32 && i < 48)
+	{
+		f = H(abcd[B], abcd[C], abcd[D]);
+		g = (3 * i + 5) % 16;
+	}
+	else if (i >= 48 && i < 64)
+	{
+		f = I(abcd[B], abcd[C], abcd[D]);
+		g = (7 * i) % 16;
+	}
+	f += abcd[A] + k[i] + bloc[g];
+	switch_abcd(abcd, f, i);
+}
+
+uint8_t		*format_message(t_md5 *md5, char *message)
+{
+	uint32_t	msg_size;
+	size_t		size_pos;
+	uint8_t		*hash_str;
+
+	md5->size = ft_strlen(message);
+	md5->nb_blocs = get_bytes_blocs(md5->size);
+	if (!(hash_str = malloc(sizeof(uint8_t) * (BLOC_SIZE * md5->nb_blocs))))
+		fatal();
+	ft_memcpy(hash_str, message, ft_strlen(message));
+	hash_str[md5->size] = 0b010000000;
+	msg_size = md5->size * 8;
+	size_pos = BLOC_SIZE * md5->nb_blocs - 8;
+	ft_memcpy(hash_str + size_pos, &msg_size, 4);
+	return (hash_str);
 }
 
 int		main(int ac, char **av)
 {
-	int		size;
 	char	*str;
-	int		total_bloc;
 	uint8_t	*hash_str;
-	uint64_t	*tmp;
+	t_md5		md5;
 
 	if (ac < 2)
 		return (1);
-	printf("%s\n", av[1]);
-	str = av[1];
-	size = ft_strlen(str);
-	total_bloc = get_bytes_blocs(size);
-	str[size] = 1;
-	hash_str = NULL;
-	printf("hash : %s/%d/%d\n", hash_str, size, total_bloc);
-	if (!(hash_str = malloc(sizeof(uint8_t) * (BLOC_SIZE * total_bloc))))
-		fatal();
-	ft_memcpy(hash_str, str, ft_strlen(str));
-	hash_str[size] = 0b010000000;
-	ft_memset(&hash_str[size + 1], 0, BLOC_SIZE * total_bloc - size - 1);
-	tmp = (uint64_t *)&hash_str[BLOC_SIZE * total_bloc - 8];
-	*tmp = (uint8_t)size * 8;
-	for (int i = 0; i < BLOC_SIZE * total_bloc; i++)
-	{
-		print_bits(hash_str[i]);
-		write(1, " ", 1);
-	}
-	loop(hash_str, total_bloc);
-	printf("\n");
-	free(hash_str);
-//	memset(tmp + siz
-	//printf("size : %d, bloc : %d\n, int size : %ld\n", size, total_bloc, sizeof(int));
+// temporaire, le temps de faire le parser correctement
+	if (!(str = malloc(sizeof(char) * ft_strlen(av[1]) + 2)))
+		return (1);
+	for (int i = 0; i < ft_strlen(av[1]); i++)
+		str[i] = av[1][i];
+	str[ft_strlen(av[1])] = '\n';
+	str[ft_strlen(av[1]) + 1] = '\0';
 
+	hash_str = format_message(&md5, str);
+	loop(&md5, (uint32_t *)hash_str);
+	free(hash_str);
 	return (0);
 }
