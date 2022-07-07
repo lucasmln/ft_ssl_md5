@@ -38,35 +38,6 @@ int		ft_strlen(char *str)
 	return (i);
 }
 
-void	print_bloc_bits(uint8_t *str)
-{
-	write(1, "BLOC BITS : ", ft_strlen("BLOC BITS : "));
-	for (int i = 0; i < BLOC_SIZE; i++)
-	{
-		char c = (i % 26) + 'A';
-		write(1, "BLOC BITS : ", ft_strlen("BLOC BITS : "));
-		write(1, &c, 1);
-		write(1, " ", 1);
-		print_bits(str[i]);
-		write(1, "\n", 1);
-	}
-	write(1, "\n", 1);
-}
-
-void    print_bits(unsigned char octet)
-{
-	int z = 128, oct = octet;
-
-	while (z > 0)
-	{
-		if (oct & z)
-			write(1, "1", 1);
-		else
-			write(1, "0", 1);
-		z >>= 1;
-	}
-}
-
 void	loop(t_md5 *md5, uint32_t *hash_str)
 {
 	uint32_t	*word_bloc;
@@ -107,22 +78,22 @@ void	digest_bloc(uint32_t *abcd, int i, uint32_t *bloc)
 
 	if (i < 16)
 	{
-		f = F(abcd[B], abcd[C], abcd[D]);
+		f = FF(abcd[B], abcd[C], abcd[D]);
 		g = i;
 	}
 	else if (i >= 16 && i < 32)
 	{
-		f = G(abcd[B], abcd[C], abcd[D]);
+		f = GG(abcd[B], abcd[C], abcd[D]);
 		g = (5 * i + 1) % 16;
 	}
 	else if (i >= 32 && i < 48)
 	{
-		f = H(abcd[B], abcd[C], abcd[D]);
+		f = HH(abcd[B], abcd[C], abcd[D]);
 		g = (3 * i + 5) % 16;
 	}
 	else if (i >= 48 && i < 64)
 	{
-		f = I(abcd[B], abcd[C], abcd[D]);
+		f = II(abcd[B], abcd[C], abcd[D]);
 		g = (7 * i) % 16;
 	}
 	f += abcd[A] + k[i] + bloc[g];
@@ -153,18 +124,25 @@ int		main(int ac, char **av)
 	uint8_t	*hash_str;
 	t_md5		md5;
 
-	if (ac < 2)
+	if (ac < 3)
 		return (1);
 // temporaire, le temps de faire le parser correctement
-	if (!(str = malloc(sizeof(char) * ft_strlen(av[1]) + 2)))
+	if (!(str = malloc(sizeof(char) * ft_strlen(av[2]) + 2)))
 		return (1);
-	for (int i = 0; i < ft_strlen(av[1]); i++)
-		str[i] = av[1][i];
-	str[ft_strlen(av[1])] = '\n';
-	str[ft_strlen(av[1]) + 1] = '\0';
+	for (int i = 0; i < ft_strlen(av[2]); i++)
+		str[i] = av[2][i];
+	str[ft_strlen(av[2])] = '\n';
+	str[ft_strlen(av[2]) + 1] = '\0';
 
-	hash_str = format_message(&md5, str);
-	loop(&md5, (uint32_t *)hash_str);
-	free(hash_str);
+	if (ft_strncmp(av[1], "md5", ft_strlen(av[1])) == 0)
+	{
+		hash_str = format_message(&md5, str);
+		loop(&md5, (uint32_t *)hash_str);
+		free(hash_str);
+	}
+	else
+	{
+		exec_sha256(md5, str);
+	}
 	return (0);
 }
