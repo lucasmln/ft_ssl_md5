@@ -1,6 +1,6 @@
 NAME = ft_ssl
 
-SRC = main.c mem.c ft_strdup.c sha256_algo.c ft_strncmp.c
+SRC = main.c mem.c ft_strdup.c sha256_algo.c ft_strncmp.c read_file.c
 
 SRCS_DIR = ./srcs/
 
