@@ -24,6 +24,7 @@ uint8_t	*append_sha256(t_md5 *md5, uint32_t *message)
 	md5->nb_blocs = get_bytes_blocs(md5->size);
 	if (!(hash_str = malloc(sizeof(uint8_t) * (BLOC_SIZE * md5->nb_blocs))))
 		fatal();
+	ft_memset(hash_str, 0, BLOC_SIZE * md5->nb_blocs);
 	ft_memcpy(hash_str, message, md5->size);
 	hash_str[md5->size] = 0b010000000;
 	int i = -1;
@@ -101,7 +102,8 @@ void	loop_sha256(t_md5 *md5, uint32_t *message)
 			h[i] += abcd[i];
 	}
 	for (int i = 0; i < 8; i++)
-		printf("%.8x", h[i]);
+		h[i] = md5_reverse(h[i]);
+	print_md5_hash(md5, h, 8);
 }
 
 void	exec_sha256(t_md5 md5, char *str)

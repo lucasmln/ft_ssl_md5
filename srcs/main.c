@@ -101,9 +101,9 @@ int		get_algo(char *algo_name)
 	return (algo);
 }
 
-void	launch_algo(int algo, t_md5 md5, char *str)
+void	launch_algo(t_md5 md5, char *str)
 {
-	switch (algo)
+	switch (md5.algo)
 	{
 		case MD5_ALGO:
 			exec_md5(md5, str);
@@ -117,7 +117,6 @@ int		main(int ac, char **av)
 {
 	char		*str;
 	t_md5		md5;
-	int			algo;
 
 	if (ac <= 1)
 	{
@@ -127,9 +126,8 @@ int		main(int ac, char **av)
 	}
 	md5.flags = 0;
 	parse(av, ac, &md5);
-	printf("flags : %d\n", md5.flags & FLAGS_P);
-	algo = get_algo(av[1]);
-	if (algo == BAD_ALGO)
+	md5.algo = get_algo(av[1]);
+	if (md5.algo == BAD_ALGO)
 	{
 		write(1, "ft_ssl: Invalid command '", 25);
 		putstr(av[1]);
@@ -138,12 +136,24 @@ int		main(int ac, char **av)
 	}
 	if (ac == 2 || (ac > 2 && (md5.flags & FLAGS_P)))
 	{
+		md5.flags = md5.flags | FLAGS_STDIN;
 		str = read_file(STDIN_FILENO, &md5.size);
-		md5.filename = "stdin";
+		if (md5.flags & FLAGS_P)
+			md5.filename = ft_strdup(str);
+		else
+			md5.filename = ft_strdup("stdin");
+		if (md5.filename[ft_strlen(md5.filename) - 1] == '\n')
+			md5.filename[ft_strlen(md5.filename) - 1] = '\0';
 		if (str)
-			launch_algo(algo, md5, str);
+		{
+			launch_algo(md5, str);
+			free(str);
+		}
+		free(md5.filename);
+		md5.flags = md5.flags ^ FLAGS_STDIN;
 		if (md5.flags & FLAGS_P)
 		{
+			md5.flags = md5.flags ^ FLAGS_P;
 			goto _file_hash;
 		}
 	}
@@ -152,11 +162,26 @@ int		main(int ac, char **av)
 _file_hash:
 		for (int i = 2; i < ac; i++)
 		{
-			str = get_file_content(av[i], &md5.size);
+			md5.nb_blocs = 0;
+			md5.size = 0;
+			str = NULL;
+			if (!ft_strncmp(av[i], "-s", 2) && ft_strlen(av[i]) == 2)
+			{
+				str = ft_strdup(av[++i]);
+				md5.size = ft_strlen(str);
+				md5.flags = md5.flags | FLAGS_S;
+			}
+			else if (!ft_strncmp(av[i], "-p", 2) || !ft_strncmp(av[i], "-q", 2)
+					|| !ft_strncmp(av[i], "-r", 2))
+				continue;
+			else
+				str = get_file_content(av[i], &md5.size);
 			if (str)
 			{
 				md5.filename = av[i];
-				launch_algo(algo, md5, str);
+				launch_algo(md5, str);
+				if (md5.flags & FLAGS_S)
+					md5.flags = md5.flags ^ FLAGS_S;
 				free(str);
 			}
 		}

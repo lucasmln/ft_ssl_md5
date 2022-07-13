@@ -39,21 +39,18 @@ void	get_options(int ac, char **av, int *i, t_md5 *md5)
 		case 'p':
 			md5->flags = md5->flags | FLAGS_P;
 		//	set_flag_ivalue((int *)&md5->default_port, *i + 1, av, ac);
-			(*i)++;
 			break;
 		case 'q':
 			md5->flags = md5->flags | FLAGS_Q;
 		//	set_flag_ivalue(&md5->nb_probes, *i + 1, av, ac);
-			(*i)++;
 			break;
 		case 'r':
 			md5->flags = md5->flags | FLAGS_R;
 		//	set_flag_ivalue(&md5->nb_probes, *i + 1, av, ac);
-			(*i)++;
 			break;
 		case 's':
-			md5->flags = md5->flags | FLAGS_S;
-		//	set_flag_ivalue(&md5->nb_probes, *i + 1, av, ac);
+			if (*i + 1 >= ac)
+				md5->flags = md5->flags | FLAGS_BAD;
 			(*i)++;
 			break;
 		case 'w':
@@ -69,19 +66,14 @@ void	get_options(int ac, char **av, int *i, t_md5 *md5)
 
 void	parse(char **av, int ac, t_md5 *md5)
 {
-	int		pos;
-
-	pos = 0;
 	for (int i = 1; i < ac; i++)
 	{
 		if (av[i][0] == '-')
 			get_options(ac, av, &i, md5);
-		/*else
+		if (md5->flags & FLAGS_BAD)
 		{
-			printf("Extra arg `%s` (position %d, argc %d)\n", av[i], pos, i);
-			exit(2);
-		}*/
-		pos++;
+			putstr("ft_ssl: Error: bad flag\n");
+			exit(1);
+		}
 	}
-	//check_flags();
 }

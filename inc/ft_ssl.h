@@ -23,6 +23,7 @@
 # define FLAGS_Q		0b0000010
 # define FLAGS_R		0b0000100
 # define FLAGS_S		0b0001000
+# define FLAGS_STDIN	0b0010000
 # define FLAGS_END		0b0100000
 # define FLAGS_BAD		0b1000000
 
@@ -37,6 +38,7 @@ int		get_bytes_blocs(int size);
 void	putstr(char *str);
 char	*read_file(int fd, uint32_t *byte_read);
 char	*get_file_content(char *filename, uint32_t *byte_read);
+void	print_hex(uint32_t nb);
 
 void	fatal();
 
@@ -46,6 +48,7 @@ typedef struct		s_md5
 {
 	int			nb_blocs;
 	int			flags;
+	int			algo;
 	uint32_t	size;
 	char		*filename;
 	void		(*fct)(struct s_md5, char *);
@@ -56,7 +59,9 @@ void	loop_sha256(t_md5 *md5, uint32_t *message);
 void	exec_sha256(t_md5 md5, char *str);
 void	exec_md5(t_md5 md5, char *str);
 void	loop_m5(t_md5 *md5, uint32_t *str);
+void	print_md5_hash(t_md5 *md5, uint32_t *h, int h_size);
 
+void	print_bloc_bits(uint8_t *str);
 # define FF(B, C, D)			((B) & (C)) | (~(B) & (D))
 # define GG(B, C, D)			((D) & (B)) | ((C) & ~(D))
 # define HH(B, C, D)			(B) ^ (C) ^ (D)
