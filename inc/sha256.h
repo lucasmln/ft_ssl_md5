@@ -1,5 +1,5 @@
-#ifndef sha256
-# define sha256
+#ifndef SHA256_H
+# define SHA256_H
 
 # include <unistd.h>
 

@@ -2,35 +2,6 @@
 # include "../inc/sha256.h"
 # include <string.h>
 
-void	print_bloc_bits(uint8_t *str)
-{
-	write(1, "BLOC BITS : \n", strlen("BLOC BITS : \n"));
-	for (int i = 0; i < BLOC_SIZE; i++)
-	{
-		char c = (i % 26) + 'A';
-		write(1, "BLOC BITS : ", strlen("BLOC BITS : "));
-		write(1, &c, 1);
-		write(1, " ", 1);
-		print_bits(str[i]);
-		write(1, "\n", 1);
-	}
-	write(1, "\n", 1);
-}
-
-void    print_bits(unsigned char octet)
-{
-	int z = 128, oct = octet;
-
-	while (z > 0)
-	{
-		if (oct & z)
-			write(1, "1", 1);
-		else
-			write(1, "0", 1);
-		z >>= 1;
-	}
-}
-
 uint32_t		swap_int32(const uint32_t value)
 {
 	uint32_t result;
@@ -50,7 +21,6 @@ uint8_t	*append_sha256(t_md5 *md5, uint32_t *message)
 	uint8_t		*hash_str;
 	uint32_t	*tmp;
 
-	md5->size = ft_strlen((char *)message);
 	md5->nb_blocs = get_bytes_blocs(md5->size);
 	if (!(hash_str = malloc(sizeof(uint8_t) * (BLOC_SIZE * md5->nb_blocs))))
 		fatal();
