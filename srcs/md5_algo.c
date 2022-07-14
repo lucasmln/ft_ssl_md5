@@ -29,7 +29,7 @@ void	print_hex(uint32_t nb)
 	int		i;
 
 	i = 7;
-	while (nb > 0)
+	while (i >= 0)
 	{
 		c = nb % 16;
 		if (c < 10)
@@ -44,18 +44,18 @@ void	print_hex(uint32_t nb)
 
 void	print_md5_hash(t_md5 *md5, uint32_t *h, int h_size)
 {
-	if (!(md5->flags & FLAGS_STDIN))
+	if (!(md5->flags & FLAGS_STDIN) && !(md5->flags & FLAGS_Q))
 	{
 		if (!(md5->flags & FLAGS_R) && md5->algo & MD5_ALGO)
 			putstr("MD5 ");
 		else if (!(md5->flags &FLAGS_R) && md5->algo & SHA256_ALGO)
 			putstr("SHA256 ");
 	}
-	if (!(md5->flags & FLAGS_R))
+	if (!(md5->flags & FLAGS_R) && !(md5->flags & FLAGS_Q))
 		print_filename(md5);
 	for (int i = 0; i < h_size; i++)
 		print_hex(md5_reverse(h[i]));
-	if (md5->flags & FLAGS_R)
+	if (md5->flags & FLAGS_R && !(md5->flags & FLAGS_Q))
 	{
 		putstr(" ");
 		print_filename(md5);

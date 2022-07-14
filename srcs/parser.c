@@ -64,16 +64,23 @@ void	get_options(int ac, char **av, int *i, t_md5 *md5)
 	}
 }
 
-void	parse(char **av, int ac, t_md5 *md5)
+int		parse(char **av, int ac, t_md5 *md5)
 {
+	int		option_count;
+
+	option_count = 0;
 	for (int i = 1; i < ac; i++)
 	{
 		if (av[i][0] == '-')
+		{
 			get_options(ac, av, &i, md5);
+			option_count++;
+		}
 		if (md5->flags & FLAGS_BAD)
 		{
 			putstr("ft_ssl: Error: bad flag\n");
 			exit(1);
 		}
 	}
+	return (option_count);
 }

@@ -54,7 +54,7 @@ typedef struct		s_md5
 	void		(*fct)(struct s_md5, char *);
 }					t_md5;
 
-void	parse(char **av, int ac, t_md5 *md5);
+int		parse(char **av, int ac, t_md5 *md5);
 void	loop_sha256(t_md5 *md5, uint32_t *message);
 void	exec_sha256(t_md5 md5, char *str);
 void	exec_md5(t_md5 md5, char *str);

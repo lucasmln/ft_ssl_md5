@@ -125,7 +125,6 @@ int		main(int ac, char **av)
 		return (1);
 	}
 	md5.flags = 0;
-	parse(av, ac, &md5);
 	md5.algo = get_algo(av[1]);
 	if (md5.algo == BAD_ALGO)
 	{
@@ -134,7 +133,7 @@ int		main(int ac, char **av)
 		write(1, "'; type 'help' for a list.\n", 27);
 		return (1);
 	}
-	if (ac == 2 || (ac > 2 && (md5.flags & FLAGS_P)))
+	if (ac - parse(av, ac, &md5) == 2 || (ac > 2 && (md5.flags & FLAGS_P)))
 	{
 		md5.flags = md5.flags | FLAGS_STDIN;
 		str = read_file(STDIN_FILENO, &md5.size);
