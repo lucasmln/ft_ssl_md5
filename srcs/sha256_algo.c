@@ -90,7 +90,10 @@ void	loop_sha256(t_md5 *md5, uint32_t *message)
 	uint32_t	tmp_word[64];
 	uint32_t	h[8];
 
-	init_h_value(h);
+	if (md5->algo == SHA256_ALGO)
+		init_h_value(h);
+	else
+		init_sha224_h_value(h);
 	for (int x = 0; x < md5->nb_blocs; x++)
 	{
 		word = (uint32_t *)(message + x * 16/*BLOC_SIZE*/);
@@ -103,7 +106,7 @@ void	loop_sha256(t_md5 *md5, uint32_t *message)
 	}
 	for (int i = 0; i < 8; i++)
 		h[i] = md5_reverse(h[i]);
-	print_md5_hash(md5, h, 8);
+	print_md5_hash(md5, h, md5->algo == SHA256_ALGO ? 8 : 7);
 }
 
 void	exec_sha256(t_md5 md5, char *str)

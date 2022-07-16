@@ -19,6 +19,7 @@
 # define BAD_ALGO		0
 # define MD5_ALGO		1
 # define SHA256_ALGO	2
+# define SHA224_ALGO	3
 # define FLAGS_P		0b0000001
 # define FLAGS_Q		0b0000010
 # define FLAGS_R		0b0000100
@@ -60,6 +61,9 @@ void	exec_sha256(t_md5 md5, char *str);
 void	exec_md5(t_md5 md5, char *str);
 void	loop_m5(t_md5 *md5, uint32_t *str);
 void	print_md5_hash(t_md5 *md5, uint32_t *h, int h_size);
+uint8_t	*append_sha256(t_md5 *md5, uint32_t *message);
+void	exec_sha224(t_md5 md5, char *str);
+void	init_sha224_h_value(uint32_t *h);
 
 void	print_bloc_bits(uint8_t *str);
 # define FF(B, C, D)			((B) & (C)) | (~(B) & (D))
