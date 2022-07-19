@@ -17,7 +17,7 @@ void    print_bits(unsigned char octet)
 void	print_bloc_bits(uint8_t *str)
 {
 	write(1, "BLOC BITS : \n", strlen("BLOC BITS : \n"));
-	for (int i = 0; i < 64; i++)
+	for (int i = 0; i < 128; i++)
 	{
 		char c = (i % 26) + 'A';
 		write(1, "BLOC BITS : ", strlen("BLOC BITS : "));
@@ -97,6 +97,8 @@ int		get_algo(char *algo_name)
 		algo = SHA256_ALGO;
 	else if (!ft_strncmp(lower_case_algo, "sha224", cmp_len))
 		algo = SHA224_ALGO;
+	else if (!ft_strncmp(lower_case_algo, "sha512", cmp_len))
+		algo = SHA512_ALGO;
 	else
 		algo = BAD_ALGO;
 	free(lower_case_algo);
@@ -115,6 +117,9 @@ void	launch_algo(t_md5 md5, char *str)
 			break;
 		case SHA224_ALGO:
 			exec_sha224(md5, str);
+			break;
+		case SHA512_ALGO:
+			exec_sha512(md5, str);
 			break;
 		default:
 			break;
