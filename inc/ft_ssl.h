@@ -21,6 +21,7 @@
 # define SHA256_ALGO	2
 # define SHA224_ALGO	3
 # define SHA512_ALGO	4
+# define SHA384_ALGO	5
 # define FLAGS_P		0b0000001
 # define FLAGS_Q		0b0000010
 # define FLAGS_R		0b0000100
@@ -57,6 +58,7 @@ typedef struct		s_md5
 }					t_md5;
 
 int		parse(char **av, int ac, t_md5 *md5);
+void	print_filename(t_md5 *md5);
 void	loop_sha256(t_md5 *md5, uint32_t *message);
 void	exec_sha256(t_md5 md5, char *str);
 void	exec_md5(t_md5 md5, char *str);

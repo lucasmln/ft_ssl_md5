@@ -46,10 +46,12 @@ void	print_md5_hash(t_md5 *md5, uint32_t *h, int h_size)
 {
 	if (!(md5->flags & FLAGS_STDIN) && !(md5->flags & FLAGS_Q))
 	{
-		if (!(md5->flags & FLAGS_R) && md5->algo & MD5_ALGO)
+		if (!(md5->flags & FLAGS_R) && md5->algo == MD5_ALGO)
 			putstr("MD5 ");
-		else if (!(md5->flags &FLAGS_R) && md5->algo & SHA256_ALGO)
+		else if (!(md5->flags &FLAGS_R) && md5->algo == SHA256_ALGO)
 			putstr("SHA256 ");
+		else if (!(md5->flags &FLAGS_R) && md5->algo == SHA224_ALGO)
+			putstr("SHA224 ");
 	}
 	if (!(md5->flags & FLAGS_R) && !(md5->flags & FLAGS_Q))
 		print_filename(md5);

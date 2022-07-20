@@ -13,6 +13,26 @@ void	init_sha512_h_value(uint64_t *h)
 	h[7] = 0x5be0cd19137e2179;
 }
 
+void	print_hex_64(uint64_t nb)
+{
+	char	c;
+	char	buf[17];
+	int		i;
+
+	i = 15;
+	while (i >= 0)
+	{
+		c = nb % 16;
+		if (c < 10)
+			buf[i--] = c + '0';
+		else
+			buf[i--] = c - 10 + 'a';
+		nb /= 16;
+	}
+	buf[16] = '\0';
+	putstr(buf);
+}
+
 
 uint64_t	uint64_reverse(uint64_t n)
 {
@@ -25,6 +45,27 @@ uint64_t	uint64_reverse(uint64_t n)
 	return (x);
 }
 
+void	print_sha512_hash(t_md5 *md5, uint64_t *h, int h_size)
+{
+	if (!(md5->flags & FLAGS_STDIN) && !(md5->flags & FLAGS_Q))
+	{
+		if (!(md5->flags & FLAGS_R) && md5->algo == SHA384_ALGO)
+			putstr("SHA384 ");
+		else if (!(md5->flags &FLAGS_R) && md5->algo == SHA512_ALGO)
+			putstr("SHA512 ");
+	}
+	if (!(md5->flags & FLAGS_R) && !(md5->flags & FLAGS_Q))
+		print_filename(md5);
+	for (int i = 0; i < h_size; i++)
+		print_hex_64(h[i]);
+	if (md5->flags & FLAGS_R && !(md5->flags & FLAGS_Q))
+	{
+		putstr(" ");
+		print_filename(md5);
+	}
+	putstr("\n");
+}
+
 uint8_t	*append_sha512(t_md5 *md5, char *str)
 {
 	uint64_t	msg_size;
@@ -32,7 +73,7 @@ uint8_t	*append_sha512(t_md5 *md5, char *str)
 	uint8_t		*hash_str;
 	uint64_t	*tmp;
 
-	md5->nb_blocs = get_bytes_blocs(md5->size);
+	md5->nb_blocs = md5->size / 128 + ((md5->size + 1) % 128 <= 112 ? 1 : 1);
 	if (!(hash_str = malloc(sizeof(uint8_t) * (2 * BLOC_SIZE  * md5->nb_blocs))))
 		fatal();
 	ft_memset(hash_str, 0, BLOC_SIZE * md5->nb_blocs * 2);
@@ -40,13 +81,8 @@ uint8_t	*append_sha512(t_md5 *md5, char *str)
 	hash_str[md5->size] = 0x80;
 	int i = -1;
 	tmp = (uint64_t *)hash_str;
-	printf("tmp[0] : %llx\n", tmp[0]);
-	printf("tmp[0] : %.16x\n", (uint32_t)str[1]);
-	printf("tmp[0] : %.16x\n", hash_str[0]);
 	while (++i < (md5->nb_blocs * 16) - 1)
 		tmp[i] = uint64_reverse(tmp[i]);
-	printf("tmp[0] : %llx\n", tmp[0]);
-	printf("tmp[0] : %.16x\n", hash_str[0]);
 	msg_size = md5->size * 8;
 	size_pos = (BLOC_SIZE * md5->nb_blocs * 2) - 8;
 	ft_memcpy(hash_str + size_pos, &msg_size, sizeof(uint64_t));
@@ -106,9 +142,10 @@ void	loop_sha512(t_md5 *md5, uint8_t *message)
 		for (int i = 0; i < 8; i++)
 			h[i] += abcd[i];
 	}
-	for (int i = 0; i < 8; i++)
-		printf("%.16llx", h[i]);
-	printf("\n");
+	print_sha512_hash(md5, h, 8);
+//	for (int i = 0; i < 8; i++)
+//		printf("%.16llx", h[i]);
+//	printf("\n");
 	//print_md5_hash(md5, h, md5->algo == SHA256_ALGO ? 8 : 7);
 }
 
