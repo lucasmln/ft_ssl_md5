@@ -2,6 +2,7 @@
 # define SHA512_H
 
 # include <unistd.h>
+# include <stdint.h>
 
 uint64_t	sha512_k[] = {
 	0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,

@@ -99,6 +99,8 @@ int		get_algo(char *algo_name)
 		algo = SHA224_ALGO;
 	else if (!ft_strncmp(lower_case_algo, "sha512", cmp_len))
 		algo = SHA512_ALGO;
+	else if (!ft_strncmp(lower_case_algo, "sha384", cmp_len))
+		algo = SHA384_ALGO;
 	else
 		algo = BAD_ALGO;
 	free(lower_case_algo);
@@ -120,6 +122,9 @@ void	launch_algo(t_md5 md5, char *str)
 			break;
 		case SHA512_ALGO:
 			exec_sha512(md5, str);
+			break;
+		case SHA384_ALGO:
+			exec_sha384(md5, str);
 			break;
 		default:
 			break;

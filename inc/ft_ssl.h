@@ -69,6 +69,11 @@ uint8_t	*append_sha256(t_md5 *md5, uint32_t *message);
 void	exec_sha224(t_md5 md5, char *str);
 void	init_sha224_h_value(uint32_t *h);
 void	exec_sha512(t_md5 md5, char *str);
+void	exec_sha384(t_md5 md5, char *str);
+void	init_sha384_h_value(uint64_t *h);
+
+uint8_t	*append_sha512(t_md5 *md5, char *str);
+void	loop_sha512(t_md5 *md5, uint8_t *message);
 
 void	print_bloc_bits(uint8_t *str);
 # define FF(B, C, D)			((B) & (C)) | (~(B) & (D))
