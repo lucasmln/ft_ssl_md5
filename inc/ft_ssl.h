@@ -5,6 +5,7 @@
 # include <stdio.h>
 # include <string.h>
 # include <unistd.h>
+# include <stdint.h>
 # include <fcntl.h>
 
 # define BLOC_SIZE		64
