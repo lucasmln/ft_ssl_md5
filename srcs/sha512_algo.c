@@ -47,7 +47,6 @@ uint64_t	uint64_reverse(uint64_t n)
 
 void	print_sha512_hash(t_md5 *md5, uint64_t *h, int h_size)
 {
-	printf("size : %d\n", h_size);
 	if (!(md5->flags & FLAGS_STDIN) && !(md5->flags & FLAGS_Q))
 	{
 		if (!(md5->flags & FLAGS_R) && md5->algo == SHA384_ALGO)
