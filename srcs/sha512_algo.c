@@ -73,7 +73,9 @@ uint8_t	*append_sha512(t_md5 *md5, char *str)
 	uint8_t		*hash_str;
 	uint64_t	*tmp;
 
-	md5->nb_blocs = md5->size / 128 + ((md5->size + 1) % 128 <= 112 ? 1 : 1);
+	md5->nb_blocs = md5->size / 128 + ((md5->size + 1) % 128 <= 112 ? 1 : 2);
+	//printf("total : %d\n", md5->nb_blocs);
+	//printf("size : %d\n", md5->size);
 	if (!(hash_str = malloc(sizeof(uint8_t) * (2 * BLOC_SIZE  * md5->nb_blocs))))
 		fatal();
 	ft_memset(hash_str, 0, BLOC_SIZE * md5->nb_blocs * 2);
@@ -94,7 +96,7 @@ void	fill_tmp_word_sha512(uint64_t *tmp_word, uint64_t *word)
 	uint64_t	s0;
 	uint64_t	s1;
 
-	ft_memcpy(tmp_word, word, 17 * sizeof(uint64_t) );
+	ft_memcpy(tmp_word, word, 16 * sizeof(uint64_t));
 	for (int t = 16; t < 80; t++)
 	{
 		s0 = SSIG0(tmp_word[t - 15]);
@@ -107,6 +109,7 @@ void	digest_sha512(uint64_t *tmp_word, uint64_t *abcd)
 {
 	uint64_t	t1;
 	uint64_t	t2;
+	static int	a = 0;
 
 	for (uint64_t t = 0; t < 80; t++)
 	{
@@ -121,6 +124,7 @@ void	digest_sha512(uint64_t *tmp_word, uint64_t *abcd)
 		abcd[B] = abcd[A];
 		abcd[A] = t1 + t2;
 	}
+	//printf("test : %d\n", a++);
 }
 
 void	loop_sha512(t_md5 *md5, uint8_t *message)
@@ -144,6 +148,9 @@ void	loop_sha512(t_md5 *md5, uint8_t *message)
 		digest_sha512(tmp_word, abcd);
 		for (int i = 0; i < 8; i++)
 			h[i] += abcd[i];
+		//for (int i = 0; i < 8; i++)
+		//	printf("%llx /", h[i]);
+		//printf("\n");
 	}
 	if (md5->algo == SHA512_ALGO)
 		print_sha512_hash(md5, h, 8);
