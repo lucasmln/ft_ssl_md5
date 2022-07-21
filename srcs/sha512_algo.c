@@ -73,7 +73,7 @@ uint8_t	*append_sha512(t_md5 *md5, char *str)
 	uint8_t		*hash_str;
 	uint64_t	*tmp;
 
-	md5->nb_blocs = md5->size / 128 + ((md5->size + 1) % 128 <= 112 ? 1 : 2);
+	md5->nb_blocs = (md5->size + 1) / 128 + ((md5->size + 1) % 128 <= 112 ? 1 : 2);
 	//printf("total : %d\n", md5->nb_blocs);
 	//printf("size : %d\n", md5->size);
 	if (!(hash_str = malloc(sizeof(uint8_t) * (2 * BLOC_SIZE  * md5->nb_blocs))))
