@@ -1,13 +1,13 @@
-NAME		:= ft_ssl
+NAME		:=	ft_ssl
 
-CC			:= clang
-CFLAGS 		:= -Wall -Werror -Wextra
+CC			:=	clang
+CFLAGS 		:=	-Wall -Werror -Wextra
 
-SRCS_DIR	:= srcs/
-OBJ_DIR		:= obj/
+SRCS_DIR	:=	srcs/
+OBJ_DIR		:=	obj/
 
-SRC			:= main mem utils sha256_algo read_file printer \
-			md5_algo parser sha224_algo sha512_algo sha384_algo
+SRC			:=	main libft utils sha256_algo read_file printer \
+				md5_algo parser sha224_algo sha512_algo sha384_algo
 
 SRCS		:=	$(addprefix $(SRCS_DIR), $(addsuffix .c, $(SRC)))
 
