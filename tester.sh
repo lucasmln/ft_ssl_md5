@@ -3,7 +3,7 @@
 clean() {
 	echo "Removed all files in tester directory" 
 	if [ "$(ls -A ./tester)" ]; then
-		rm tester/*.txt
+		rm tester/*
 	else
 		echo "No files to delete"
 	fi
@@ -80,10 +80,10 @@ if [ ! -d "./tester" ]; then
 	mkdir ./tester
 fi
 
-ft_ssl_res=./tester/ft_ssl_res.txt
-openssl_res=./tester/openssl_res.txt
-openssl_trunc=./tester/openssl_res_trunc.txt
-ft_ssl_trunc=./tester/ft_ssl_res_trunc.txt
+ft_ssl_res=./tester/ft_ssl_res.
+openssl_res=./tester/openssl_res.
+openssl_trunc=./tester/openssl_res_trunc.
+ft_ssl_trunc=./tester/ft_ssl_res_trunc.
 
 declare color=("\033[1;35m" "\033[1;32m" "\033[1;33m" "\033[1;36m" "\033[1;34m")
 
@@ -113,12 +113,12 @@ do
 		echo -e $RED "\ntest $i with $nb characters" ${NC}>> tester/log.txt
 		LC_ALL=C tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' </dev/urandom | head -c $nb > tester/tmp.txt
 		cat tester/tmp.txt >> tester/log.txt
-		openssl ${algo[$x]} tester/tmp.txt >> $openssl_res
-		./ft_ssl ${algo[$x]} tester/tmp.txt >> $ft_ssl_res
+		openssl ${algo[$x]} tester/tmp.txt >> $openssl_res${algo[$x]}
+		./ft_ssl ${algo[$x]} tester/tmp.txt >> $ft_ssl_res${algo[$x]}
 	done
-	cat $ft_ssl_res | cut -d'=' -f2- | cut -d' ' -f2- > ${algo[$x]}"_"$ft_ssl_trunc${algo[$x]}
-	cat $openssl_res | cut -d'=' -f2- | cut -d' ' -f2- > ${algo[$x]}"_"$openssl_trunc
-	diff $openssl_trunc $ft_ssl_trunc &>/dev/null
+	cat $ft_ssl_res${algo[$x]} | cut -d'=' -f2- | cut -d' ' -f2- > $ft_ssl_trunc${algo[$x]}
+	cat $openssl_res${algo[$x]} | cut -d'=' -f2- | cut -d' ' -f2- > $openssl_trunc${algo[$x]}
+	diff $openssl_trunc${algo[$x]} $ft_ssl_trunc${algo[$x]} &>/dev/null
 	if [ $? -ne 0 ]; then
 		echo -e "\U000274c The directory was modified";
 	else
