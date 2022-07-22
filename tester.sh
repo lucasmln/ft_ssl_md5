@@ -34,6 +34,10 @@ parse() {
 			exit 0
 		fi
 		if [ ${!i} == "bonus" ]; then
+			if [ ! ${#algo[@]} -eq 0 ]; then
+				echo "error: incompatible option bonus and -a"
+				exit 1
+			fi
 			algo=("MD5" "SHA256" "SHA224" "SHA512" "SHA384")
 		fi
 		if [ ${!i} = "-n" ]; then
@@ -54,6 +58,10 @@ parse() {
 			exit 0
 		fi
 		if [[ ${!i} = "-a" || ${!i} == "--algo" ]]; then
+			if [ ! ${#algo[@]} -eq 0 ]; then
+				echo "error: incompatible option bonus and -a"
+				exit 1
+			fi
 			j=$((i + 1))
 			if [[ ( $j > "$#" ) ]]; then
 				echo "Missing argument for ${!i} option"
