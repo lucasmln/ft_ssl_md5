@@ -1,71 +1,9 @@
 #include "../inc/ft_ssl.h"
 
-void    print_bits(unsigned char octet)
+int		get_bytes_blocs(int size, int bloc_size)
 {
-	int z = 128, oct = octet;
-
-	while (z > 0)
-	{
-		if (oct & z)
-			write(1, "1", 1);
-		else
-			write(1, "0", 1);
-		z >>= 1;
-	}
+	return ((size / bloc_size) + 1 + (size % bloc_size >= bloc_size - bloc_size / 8 ? 1 : 0));
 }
-
-void	print_bloc_bits(uint8_t *str)
-{
-	write(1, "BLOC BITS : \n", strlen("BLOC BITS : \n"));
-	for (int i = 0; i < 128; i++)
-	{
-		char c = (i % 26) + 'A';
-		write(1, "BLOC BITS : ", strlen("BLOC BITS : "));
-		write(1, &c, 1);
-		write(1, " ", 1);
-		print_bits(str[i]);
-		write(1, "\n", 1);
-	}
-}
-
-int		md5_reverse(int i)
-{
-	int result;
-
-	result = (i << 24 & 0xff000000) +
-		(i << 8 & 0xff0000) +
-		(i >> 8 & 0xff00) +
-		(i >> 24 & 0xff);
-	return (result);
-}
-
-
-void	putstr(char *str)
-{
-	write(1, str, ft_strlen(str));
-}
-
-int		get_bytes_blocs(int size)
-{
-	return ((size / BLOC_SIZE) + 1 + (size % BLOC_SIZE >= 56 ? 1 : 0));
-}
-
-void	fatal()
-{
-	write(2, "Fatal error: malloc() failed\n", 29);
-	exit(2);
-}
-
-int		ft_strlen(char *str)
-{
-	int		i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
-
 
 char	*put_lower_case(char *str)
 {
@@ -139,7 +77,6 @@ int		main(int ac, char **av)
 	if (ac <= 1)
 	{
 		write(1, "usage: ft_ssl command [flags] [file/string]\n", 44);
-		// read from stdin
 		return (1);
 	}
 	md5.flags = 0;

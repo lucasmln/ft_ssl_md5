@@ -16,7 +16,7 @@ void	exec_sha384(t_md5 md5, char *str)
 {
 	uint8_t	*message;
 
-	message = append_sha512(&md5, str);
+	message = format_sha512(&md5, str);
 	loop_sha512(&md5, message);
 	free(message);
 }

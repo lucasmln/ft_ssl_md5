@@ -9,6 +9,11 @@ clean() {
 	fi
 }
 
+if [[ ! -d "./tester" ]]
+then
+	mkdir ./tester
+fi
+
 if [ "$1" == "clean" ]; then
 	clean
 	exit 0
@@ -37,12 +42,12 @@ else
 	algo=("MD5" "SHA256")
 fi
 
-for (( x=0; x < ${#algo[@]}; x++ ))
+for (( x = 0; x < ${#algo[@]}; x++ ))
 do
 	echo "\t\t\t${color[$x]} ${algo[$x]} TEST $NC"
-	for (( i=0; i < 5; i++ ))
+	for (( i=0; i < 100; i++ ))
 	do
-		nb=`shuf -i 1-100000 -n 1`
+		nb=`shuf -i 1-1000000 -n 1`
 		echo $RED "\ntest $i with $nb characters" $NC>> tester/log.txt
 		LC_ALL=C tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' </dev/urandom | head -c $nb > tester/tmp.txt
 		cat tester/tmp.txt >> tester/log.txt

@@ -1,17 +1,18 @@
 #include "../inc/ft_ssl.h"
 
-
 char	*read_file(int fd, uint32_t *byte_read)
 {
-	char	buf[1024];
+	char	*buf;
 	int		ret;
 	char	*tmp;
 	char	*message;
 
+	if (!(buf = malloc(sizeof(char) * (BUF_SIZE + 1))))
+		fatal();
 	if (!(message = malloc(sizeof(char) * 1)))
 		fatal();
 	*byte_read = 0;
-	while ((ret = read(fd, buf, 1024)) > 0)
+	while ((ret = read(fd, buf, BUF_SIZE)) > 0)
 	{
 		if (!(tmp = malloc(sizeof(char) * (*byte_read + 1))))
 			fatal();
@@ -25,6 +26,7 @@ char	*read_file(int fd, uint32_t *byte_read)
 		*byte_read += ret;
 	}
 	message[*byte_read] = '\0';
+	free(buf);
 	return (message);
 }
 

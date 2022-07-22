@@ -1,26 +1,38 @@
-NAME = ft_ssl
+NAME		:= ft_ssl
 
-SRC = main.c mem.c ft_strdup.c sha256_algo.c ft_strncmp.c read_file.c \
-		md5_algo.c parser.c sha224_algo.c sha512_algo.c sha384_algo.c
+CC			:= clang
+CFLAGS 		:= -Wall -Werror -Wextra
 
-SRCS_DIR = ./srcs/
+SRCS_DIR	:= srcs/
+OBJ_DIR		:= obj/
 
-CFLAGS = #-Wall -Werror -Wextra
+SRC			:= main mem utils sha256_algo read_file printer \
+			md5_algo parser sha224_algo sha512_algo sha384_algo
 
-SRCS = $(addprefix $(SRCS_DIR), $(SRC))
+SRCS		:=	$(addprefix $(SRCS_DIR), $(addsuffix .c, $(SRC)))
 
-OBJ = $(SRCS:.c=.o)
+OBJ 		:=	$(addprefix $(OBJ_DIR), $(SRCS:%.c=%.o))
+
 
 all : $(NAME)
 
 $(NAME) : $(OBJ)
-		clang $(CFLAGS) $(OBJ) -o $(NAME)
+		$(CC) -o $(NAME) $(CFLAGS) $(OBJ)
+
+$(OBJ): | $(OBJ_DIR)
+
+$(OBJ_DIR):
+	@mkdir -p $(OBJ_DIR)$(SRCS_DIR)
+
+$(OBJ_DIR)%.o: %.c
+	@$(CC) $(CFLAGS) -o $@ -c $<
 
 clean:
 	rm -rf $(OBJ)
 
 fclean: clean
 	rm -rf $(NAME)
+	rm -rf $(OBJ_DIR)
 
 re: fclean
 	make

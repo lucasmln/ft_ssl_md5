@@ -1,7 +1,13 @@
 #ifndef MD5_H
 # define MD5_H
 
-#include <unistd.h>
+# include <unistd.h>
+
+# define FF(B, C, D)			((B) & (C)) | (~(B) & (D))
+# define GG(B, C, D)			((D) & (B)) | ((C) & ~(D))
+# define HH(B, C, D)			(B) ^ (C) ^ (D)
+# define II(B, C, D)			(C) ^ (B | ~(D))
+# define LEFT_ROTATE(x, n)		(((x) << (n)) | ((x) >> (32 - (n))))
 
 uint32_t	k[] = { 0xd76aa478,0xe8c7b756,0x242070db,0xc1bdceee,
 				0xf57c0faf,0x4787c62a,0xa8304613,0xfd469501,

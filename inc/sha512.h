@@ -4,6 +4,15 @@
 # include <unistd.h>
 # include <stdint.h>
 
+# define	ROTR64(x, n) (((x) >> (n)) | ((x) << (64 - (n))))
+# define	SHR(x, n) (x >> n)
+# define	CH(x, y, z) ((x & y) ^ ((~x) & z))
+# define	MAJ(x, y, z) ((x & y) ^ (x & z) ^ (y & z))
+# define	BSIG0(x) (ROTR64(x, 28) ^ ROTR64(x, 34) ^ ROTR64(x, 39))
+# define	BSIG1(x) (ROTR64(x, 14) ^ ROTR64(x, 18) ^ ROTR64(x, 41))
+# define	SSIG0(x) (ROTR64(x, 1) ^ ROTR64(x, 8) ^ SHR(x, 7))
+# define	SSIG1(x) (ROTR64(x, 19) ^ ROTR64(x, 61) ^ SHR(x, 6))
+
 uint64_t	sha512_k[] = {
 	0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
 	0x3956c25bf348b538, 0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
@@ -26,14 +35,5 @@ uint64_t	sha512_k[] = {
 	0x28db77f523047d84, 0x32caab7b40c72493, 0x3c9ebe0a15c9bebc, 0x431d67c49c100d4c,
 	0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817
 };
-
-# define	ROTR64(x, n) (((x) >> (n)) | ((x) << (64 - (n))))
-# define	SHR(x, n) (x >> n)
-# define	CH(x, y, z) ((x & y) ^ ((~x) & z))
-# define	MAJ(x, y, z) ((x & y) ^ (x & z) ^ (y & z))
-# define	BSIG0(x) (ROTR64(x, 28) ^ ROTR64(x, 34) ^ ROTR64(x, 39))
-# define	BSIG1(x) (ROTR64(x, 14) ^ ROTR64(x, 18) ^ ROTR64(x, 41))
-# define	SSIG0(x) (ROTR64(x, 1) ^ ROTR64(x, 8) ^ SHR(x, 7))
-# define	SSIG1(x) (ROTR64(x, 19) ^ ROTR64(x, 61) ^ SHR(x, 6))
 
 #endif

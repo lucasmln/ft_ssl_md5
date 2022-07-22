@@ -3,9 +3,18 @@
 
 # include <unistd.h>
 
+# define ROTR(x, n) (((x) >> (n)) | ((x) << (32 - (n))))
+# define SHR(x, n) (x >> n)
+# define CH(x, y, z) ((x & y) ^ ((~x) & z))
+# define MAJ(x, y, z) ((x & y) ^ (x & z) ^ (y & z))
+# define MAJ_SIGMA0(x) (ROTR(x, 2) ^ ROTR(x, 13) ^ ROTR(x, 22))
+# define MAJ_SIGMA1(x) (ROTR(x, 6) ^ ROTR(x, 11) ^ ROTR(x, 25))
+# define SIGMA0(x) (ROTR(x, 7) ^ ROTR(x, 18) ^ (x >> 3))
+# define SIGMA1(x) (ROTR(x, 17) ^ ROTR(x, 19) ^ (x >> 10))
 
-uint32_t	h[8] = { 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
-	0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
+uint32_t	h[8] = {
+	0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c,
+	0x1f83d9ab, 0x5be0cd19
 };
 
 uint32_t	sha256_k[64] = {
@@ -21,14 +30,5 @@ uint32_t	sha256_k[64] = {
 	0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
 	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
-
-# define ROTR(x, n) (((x) >> (n)) | ((x) << (32 - (n))))
-# define SHR(x, n) (x >> n)
-# define CH(x, y, z) ((x & y) ^ ((~x) & z))
-# define MAJ(x, y, z) ((x & y) ^ (x & z) ^ (y & z))
-# define MAJ_SIGMA0(x) (ROTR(x, 2) ^ ROTR(x, 13) ^ ROTR(x, 22))
-# define MAJ_SIGMA1(x) (ROTR(x, 6) ^ ROTR(x, 11) ^ ROTR(x, 25))
-# define SIGMA0(x) (ROTR(x, 7) ^ ROTR(x, 18) ^ (x >> 3))
-# define SIGMA1(x) (ROTR(x, 17) ^ ROTR(x, 19) ^ (x >> 10))
 
 #endif
