@@ -128,9 +128,11 @@ do
 	cat $openssl_res${algo[$x]} | cut -d'=' -f2- | cut -d' ' -f2- > $openssl_trunc${algo[$x]}
 	diff $openssl_trunc${algo[$x]} $ft_ssl_trunc${algo[$x]} &>/dev/null
 	if [ $? -ne 0 ]; then
-		echo -e "\U000274c The directory was modified";
+		perl -C -e 'print "\x{274c}"'
+		echo -e " The directory was modified";
 	else
-		echo -e "\U0002705 No difference between ft_ssl and openssl";
+		perl -C -e 'print "\x{2705}"'
+		echo -e " No difference between ft_ssl and openssl";
 	fi
 done
 
