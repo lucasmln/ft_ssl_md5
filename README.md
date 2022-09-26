@@ -1,17 +1,31 @@
 # ft_ssl_md5
 
-ft_ssl_md5 is a student project where we reproduct the MD5 and SHA256 algorithm.
-Currently my project can hash a string with more algorithm :
+ft_ssl_md5 is a student project where we reproduct the MD5 and SHA256 algorithm.  
+Currently my project works with different algorithms :  
 * `md5`
 * `sha256`
 * `sha224`
 * `sha512`
 * `sha384`
 
+## Option :
+
+* `-s` means the next parameter will be the string to hash
+* `-q` displays only the hash
+* `-r` reverses the display order (i.e HASH - FILE)
+* `-p` displays the string to hash instead of the file
+
 ## Usage :
+
+`Make && ./ft_ssl [algo] [options] [file/string]`
+
+example :  
 ```
-Make && ./ft_ssl [algo] [options] [file/string]
-	example : echo "String to hash" > myFile.txt ; ./ft_ssl md5 myFile.txt
-To use it with a string, provide the option '-s'
-	example : ./ft_ssl sha256 -s "Hash me please"
+echo "String to hash" > myFile.txt ; ./ft_ssl md5 myFile.txt
+```
+
+To use it with a string, provide the option **-s**.  
+example : 
+```
+./ft_ssl sha256 -s "Hash me please"
 ```
