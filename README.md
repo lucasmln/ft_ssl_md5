@@ -13,7 +13,7 @@ Currently my project works with different algorithms :
 * `-s` means the next parameter will be the string to hash
 * `-q` displays only the hash
 * `-r` reverses the display order (i.e HASH - FILE)
-* `-p` displays the string to hash instead of the file
+* `-p` reads from stdin and display the string instead of the filename
 
 ## Usage :
 
